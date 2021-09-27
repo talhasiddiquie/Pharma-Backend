@@ -1,20 +1,28 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-var bricks = new Schema({
+var bricks = new Schema(
+  {
     objectId: { type: String },
     name: { type: String },
     abbreviation: { type: String },
     identifier: { type: String },
     brickType: { type: String },
-    regionId: { type: String },
-    zoneId: { type: String },
-    territoryId: { type: String },
+    // regionId: { type: String },
+    // zoneId: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "zone",
+    //   required: true,
+    // },
+    territoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "territory",
+      required: true,
+    },
     isActive: { type: Boolean },
-    createdBy: { type: String },
-    updatedBy: { type: String },
-});
+  },
+  { timestamps: true }
+);
 
-
-const Bricks = mongoose.model('bricks', bricks);
+const Bricks = mongoose.model("bricks", bricks);
 module.exports = Bricks;

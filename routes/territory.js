@@ -1,111 +1,54 @@
 const express = require("express");
 const router = express.Router();
-const Territory = require('../models/territory');
+const Territory = require("../models/territory");
 const _ = require("underscore");
 
-router.post('/postTerritory', (req, res) => {
-    var territoryData = req.body;
-    if (territoryData.objectId === '' || territoryData.objectId === undefined) {
-        const postTerritoryData = new Territory({
-            name: territoryData.name,
-            abbreviation: territoryData.abbreviation,
-            identifier: territoryData.identifier,
-            regionId: territoryData.regionId,
-            zoneId: territoryData.zoneId,
-            provinceId: territoryData.provinceId,
-            cityId: territoryData.cityId,
-            isActive: territoryData.isActive,
-            createdBy: territoryData.createdBy,
-            updatedBy: territoryData.updatedBy,
-            
-        })
-        postTerritoryData.save(function (err, data) {
-            if (err) {
-                res.send({
-                    code: 500,
-                    content: 'Internal Server Error',
-                    msg: 'API not called properly'
-                })
-            }
-            else if (data) {
-                res.send({
-                    code: 200,
-                    msg: 'Data saved successfully',
-                    content: data
-                });
-            }
-        })
-    }
-    else if (territoryData.objectId !== '') {
-        Territory.findOneAndUpdate(
-            { "_id": territoryData.objectId },
-            { $set: _.omit(territoryData, '_id') },
-            { new: true }
-        ).then(() => {
-            Territory.find({ "_id": territoryData.objectId }, function (err, documents) {
-                res.send({
-                    error: err,
-                    content: documents,
-                    code: 200,
-                    msg: 'data updated successfullly'
-                });
-            })
-        }).catch(() => res.status(422).send({ msg: 'Internal server error' }));
-    }
-})
+router.post("/postTerritory", async (req, res) => {
+  const territory = await Territory.create(req.body);
+  if (!territory) res.status(402).send({ message: "something went wrong" });
+  else res.status(201).send(territory);
+});
 
-router.get('/getTerritorys', (req, res) => {
-    Territory.find(function (err, data) {
-        if (err) {
-            res.send({
-                code: 404,
-                msg: 'Something went wrong'
-            })
-        }
-        else if (data) {
-            res.send({
-                code: 200,
-                msg: 'All Territory Data',
-                content: data
-            })
-        }
-    })
-})
+router.get("/getTerritories", async (req, res) => {
+  const territory = await Territory.find().populate({
+    path: "zoneId",
+    model: "zone",
+    populate: {
+      path: "regionId",
+      model: "region",
+      populate: { path: "provinceId", model: "province" },
+    },
+  });
+  if (!territory) res.status(402).send({ message: "something went wrong" });
+  else res.status(201).send(territory);
+});
 
-router.post('/getSpecificTerritoryById', (req, res) => {
-    let territoryData = req.body;
-    Territory.find({ "_id": territoryData.objectId }, function (err, data) {
-        if (err) {
-            res.send({
-                code: 404,
-                msg: 'Something went wrong'
-            })
-        }
-        else if (data) {
-            res.send({
-                code: 200,
-                msg: 'Territory Data',
-                content: data
-            })
-        }
-    })
-})
+router.post("/getTerritory", async (req, res) => {
+  const territory = await Territory.findById(req.body.id).populate({
+    path: "zoneId",
+    model: "zone",
+    populate: {
+      path: "regionId",
+      model: "region",
+      populate: { path: "provinceId", model: "province" },
+    },
+  });
+  if (!territory) res.status(402).send({ message: "something went wrong" });
+  else res.status(201).send(territory);
+});
 
-router.post('/deleteTerritory', (req, res) => {
-    var territoryData = req.body;
-    Territory.deleteOne({ "_id": territoryData.objectId },
-        function (err, docs) {
-            if (err) {
-                res.json(err);
-            }
-            else {
-                res.send({
-                    code: 200,
-                    msg: 'Territory data delete successfully',
-                    content: docs
-                });
-            }
-        });
-})
+router.post("/deleteTerritory", async (req, res) => {
+  const territory = await Territory.findByIdAndDelete(req.body.id);
+  if (!territory) res.status(402).send({ message: "something went wrong" });
+  else res.status(201).send(territory);
+});
+
+router.post("/updateTerritory", async (req, res) => {
+  const territory = await Territory.findByIdAndUpdate(req.body.id, req.body, {
+    new: true,
+  });
+  if (!territory) res.status(402).send({ message: "something went wrong" });
+  else res.status(201).send(territory);
+});
 
 module.exports = router;

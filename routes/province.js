@@ -1,104 +1,90 @@
 const express = require("express");
 const router = express.Router();
-const Province = require('../models/province');
+const Province = require("../models/province");
 const _ = require("underscore");
+const provinceValidation = require("../validations/province.validation");
+const validate = require("../middlewares/validate");
 
-router.post('/postProvince', (req, res) => {
-    var provinceData = req.body;
-    if (provinceData.objectId === '' || provinceData.objectId === undefined) {
-        const postProvinceData = new Province({
-            name: provinceData.name,
-            isActive: provinceData.isActive,
-            regionId: provinceData.regionId,
-            objectId: provinceData.objectId
-        })
-        postProvinceData.save(function (err, data) {
-            if (err) {
-                res.send({
-                    code: 500,
-                    content: 'Internal Server Error',
-                    msg: 'API not called properly'
-                })
-            }
-            else if (data) {
-                res.send({
-                    code: 200,
-                    msg: 'Data saved successfully',
-                    content: data
-                });
-            }
-        })
+router.post(
+  "/postProvince",
+  validate(provinceValidation.createProvince),
+  async (req, res) => {
+    const province = await Province.create(req.body);
+    if (!province) {
+      res.status(402).send({ message: "something went wrong " });
     }
-    else if (provinceData.objectId !== '') {
-        Province.findOneAndUpdate(
-            { "_id": provinceData.objectId },
-            { $set: _.omit(provinceData, '_id') },
-            { new: true }
-        ).then(() => {
-            Province.find({ "_id": provinceData.objectId }, function (err, documents) {
-                res.send({
-                    error: err,
-                    content: documents,
-                    code: 200,
-                    msg: 'data updated successfullly'
-                });
-            })
-        }).catch(() => res.status(422).send({ msg: 'Internal server error' }));
+    res.status(201).send(province);
+  }
+);
+
+router.get("/getProvinces", (req, res) => {
+  Province.find(function (err, data) {
+    if (err) {
+      res.send({
+        code: 404,
+        msg: "Something went wrong",
+      });
+    } else if (data) {
+      res.send({
+        code: 200,
+        msg: "All Province Data",
+        content: data,
+      });
     }
-})
+  });
+});
 
-router.get('/getProvinces', (req, res) => {
-    Province.find(function (err, data) {
-        if (err) {
-            res.send({
-                code: 404,
-                msg: 'Something went wrong'
-            })
-        }
-        else if (data) {
-            res.send({
-                code: 200,
-                msg: 'All Province Data',
-                content: data
-            })
-        }
-    })
-})
+router.post("/getSpecificProvinceById", (req, res) => {
+  let provinceData = req.body;
+  Province.find({ _id: provinceData.objectId }, function (err, data) {
+    if (err) {
+      res.send({
+        code: 404,
+        msg: "Something went wrong",
+      });
+    } else if (data) {
+      res.send({
+        code: 200,
+        msg: "Province Data",
+        content: data,
+      });
+    }
+  });
+});
 
-router.post('/getSpecificProvinceById', (req, res) => {
-    let provinceData = req.body;
-    Province.find({ "_id": provinceData.objectId }, function (err, data) {
-        if (err) {
-            res.send({
-                code: 404,
-                msg: 'Something went wrong'
-            })
-        }
-        else if (data) {
-            res.send({
-                code: 200,
-                msg: 'Province Data',
-                content: data
-            })
-        }
-    })
-})
+router.post("/deleteProvince", async (req, res) => {
+  if (!req.body.id) {
+    res.status(402), send({ message: "no ID found" });
+  } else {
+    const ID = req.body.id;
+    const check = await findProvinceById(ID);
+    const province = await Province.findByIdAndDelete(check.id);
+    res.status(200).send(province);
+  }
+});
 
-router.post('/deleteProvince', (req, res) => {
-    var provinceData = req.body;
-    Province.deleteOne({ "_id": provinceData.objectId },
-        function (err, docs) {
-            if (err) {
-                res.json(err);
-            }
-            else {
-                res.send({
-                    code: 200,
-                    msg: 'Province data delete successfully',
-                    content: docs
-                });
-            }
-        });
-})
+router.post("/updateProvince", async (req, res) => {
+  console.log(req.body);
+  if (!req.body.id) {
+    res.status(402), send({ message: "no ID found" });
+  } else {
+    const ID = req.body.id;
+    const province = await Province.findByIdAndUpdate(ID, req.body, {
+      new: true,
+    });
+    res.status(200).send(province);
+  }
+});
+
+router.post("/:id", async (req, res) => {
+  const ID = req.params.id;
+  const province = await findProvinceById(ID);
+  res.status(200).send(province);
+});
+
+const findProvinceById = async (id) => {
+  const province = await Province.findById(id).populate("provinceId");
+  return province;
+};
 
 module.exports = router;

@@ -5,7 +5,7 @@ var representative = new Schema({
     objectId: { type: String },
     name: { type: String },
     identifier: { type: String },
-    managerId: { type: String },
+    // managerId: { type: String },
     designationDataStart: { type: Number },
     designationDataEnd: { type: Number },
     designationId: { type: Object },
