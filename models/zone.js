@@ -1,17 +1,22 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-var zone = new Schema({
+var zone = new Schema(
+  {
     objectId: { type: String },
     name: { type: String },
     abbreviation: { type: String },
     identifier: { type: String },
-    regionId: { type: String },
+    regionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "region",
+      required: true,
+    },
     provinceId: { type: String },
     isActive: { type: Boolean },
-    createdBy: { type: String },
-    updatedBy: { type: String },
-});
+  },
+  { timestamps: true }
+);
 
-const Zone = mongoose.model('zone', zone);
+const Zone = mongoose.model("zone", zone);
 module.exports = Zone;

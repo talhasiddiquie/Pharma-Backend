@@ -9,6 +9,7 @@ const moment = require("moment");
 const bcryptjs = require("bcryptjs");
 router.post("/signUp", multer.single("profileImage"), (req, res) => {
   var usersData = req.body;
+  console.log(usersData);
   if (usersData.objectId === "" || usersData.objectId === undefined) {
     const postusersData = new UsersInfo({
       name: usersData.name,
@@ -23,6 +24,7 @@ router.post("/signUp", multer.single("profileImage"), (req, res) => {
     });
     postusersData.save(function (err, data) {
       if (err) {
+        console.log(err );
         res.send({
           code: 500,
           content: "Internal Server Error",
@@ -118,7 +120,7 @@ router.post("/forgotpassword", async (req, res) => {
   }
 });
 
-router.get("/all", verifyToken, (req, res) => {
+router.get("/all", (req, res) => {
   const users = UsersInfo.find();
   users
     .then((data, err) => {

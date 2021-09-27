@@ -1,19 +1,22 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-var territory = new Schema({
+var territory = new Schema(
+  {
     objectId: { type: String },
     name: { type: String },
     abbreviation: { type: String },
     identifier: { type: String },
     regionId: { type: String },
-    zoneId: { type: String },
-    provinceId: { type: String },
-    cityId: { type: Array },
+    zoneId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "zone",
+      required: true,
+    },
     isActive: { type: Boolean },
-    createdBy: { type: String },
-    updatedBy: { type: String },
-});
+  },
+  { timestamps: true }
+);
 
-const Territory = mongoose.model('territory', territory);
+const Territory = mongoose.model("territory", territory);
 module.exports = Territory;

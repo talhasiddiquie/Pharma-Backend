@@ -6,7 +6,11 @@ var region = new Schema({
   name: { type: String },
   abbreviation: { type: String },
   identifier: { type: String },
-  provinceId: { type: Array },
+  provinceId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "province",
+    required: true,
+  },
   isActive: { type: Boolean },
   createdBy: { type: String },
   updatedBy: { type: String },

@@ -2,9 +2,8 @@ var mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 var province = new Schema({
-  objectId: { type: String },
-  name: { type: String },
-  regionId: { type: Array },
+  objectId: { type: String, required: true },
+  name: { type: String, required: true },
   isActive: { type: Boolean },
 });
 

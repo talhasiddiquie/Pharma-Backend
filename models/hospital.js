@@ -1,23 +1,27 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-var hospital = new Schema({
+var hospital = new Schema(
+  {
     objectId: { type: String },
-    identifier: { type: String },
-    regionId: { type: String },
-    zoneId: { type: String },
-    cityId: { type: String },
+    // identifier: { type: String },
+    // regionId: { type: String },
+    // zoneId: { type: String },
+    // cityId: { type: String },
     name: { type: String },
     abbreviation: { type: String },
     address: { type: String },
     phone: { type: String },
-    territoryId: { type: String },
-    brickId: { type: String },
+    // territoryId: { type: String },
+    brickId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "bricks",
+      required: true,
+    },
     isActive: { type: Boolean },
-    createdBy: { type: String },
-    updatedBy: { type: String },
-});
+  },
+  { timestamps: true }
+);
 
-
-const Hospitals = mongoose.model('hospital', hospital);
+const Hospitals = mongoose.model("hospital", hospital);
 module.exports = Hospitals;
