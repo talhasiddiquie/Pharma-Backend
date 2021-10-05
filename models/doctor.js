@@ -1,7 +1,8 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-var doctor = new Schema({
+var doctor = new Schema(
+  {
     objectId: { type: String },
     name: { type: String },
     abbreviation: { type: String },
@@ -16,29 +17,35 @@ var doctor = new Schema({
     fee: { type: Number },
     potential: { type: String },
     lastValidatedAt: { type: Date, default: Date.now },
-    representativeId: { type: String },
-    regionId: { type: String },
-    zoneId: { type: String },
-    territoryId: { type: Object },
-    qualificationId: { type: String },
-    designationId: { type: String },
-    specialityId: { type: String },
-    hospitalId: { type: String },
-    provinceId: { type: String },
-    cityId: { type: String },
+    representativeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "representative",
+    },
+    regionId: { type: mongoose.Schema.Types.ObjectId, ref: "region" },
+    zoneId: { type: mongoose.Schema.Types.ObjectId, ref: "zone" },
+    territoryId: { type: mongoose.Schema.Types.ObjectId, ref: "territory" },
+    qualificationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "qualification",
+    },
+    designationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "designation",
+    },
+    specialityId: { type: mongoose.Schema.Types.ObjectId, ref: "speciality" },
+    hospitalId: { type: mongoose.Schema.Types.ObjectId, ref: "hospital" },
+    provinceId: { type: mongoose.Schema.Types.ObjectId, ref: "province" },
+    cityId:  { type: mongoose.Schema.Types.ObjectId, ref: "city" },
     cityName: { type: String },
-    brickId: { type: String },
+    brickId: { type: mongoose.Schema.Types.ObjectId, ref: "brick" },
     imsBrickId: { type: String },
-    tierId: { type: String },
+    tierId: { type: mongoose.Schema.Types.ObjectId, ref: "tier" },
     remarks: { type: String },
     status: { type: String },
-
     isActive: { type: Boolean },
-    createdBy: { type: String },
-    updatedBy: { type: String },
+  },
+  { timestamps: true }
+);
 
-});
-
-
-const Doctors = mongoose.model('doctor', doctor);
+const Doctors = mongoose.model("doctor", doctor);
 module.exports = Doctors;

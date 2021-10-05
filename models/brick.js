@@ -24,5 +24,5 @@ var bricks = new Schema(
   { timestamps: true }
 );
 
-const Bricks = mongoose.model("bricks", bricks);
+const Bricks = mongoose.model("brick", bricks);
 module.exports = Bricks;

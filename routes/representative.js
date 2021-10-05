@@ -6,6 +6,7 @@ const main = require("../middlewares/mailer");
 const verifyToken = require("../middlewares/verifyToken");
 
 router.post("/postRepresentative", async (req, res) => {
+  console.log(req.body, "<==== representative");
   if (req.body === null || req.body === undefined || req.body === {})
     res.status(403).send({ message: "no data received" });
   const representative = await Representative.create(req.body);
@@ -16,21 +17,40 @@ router.post("/postRepresentative", async (req, res) => {
   }
 });
 
-router.get("/getRepresentatives", (req, res) => {
-  Representative.find(function (err, data) {
-    if (err) {
-      res.send({
-        code: 404,
-        msg: "Something went wrong",
-      });
-    } else if (data) {
-      res.send({
-        code: 200,
-        msg: "All Representative Data",
-        content: data,
-      });
-    }
-  });
+router.get("/getRepresentatives", async (req, res) => {
+  const representative = await Representative.find()
+    .populate("designationId")
+    .populate("provinceId")
+    .populate("regionId")
+    .populate("zoneId")
+    .populate("territoryId")
+    .populate("bloodGroupId");
+  res.status(200).send(representative);
+});
+
+router.post("/getRepresentative", async (req, res) => {
+  const representative = await Representative.findById(req.body.id)
+    .populate("designationId")
+    .populate("provinceId")
+    .populate("regionId")
+    .populate("zoneId")
+    .populate("territoryId")
+    .populate("bloodGroupId");
+  res.status(200).send(representative);
+});
+
+router.post("/deleteRepresentative", async (req, res) => {
+  const representative = await Representative.findByIdAndDelete(req.body.id);
+  res.status(200).send(representative);
+});
+
+router.post("/updateRepresentative", async (req, res) => {
+  const representative = await Representative.findByIdAndUpdate(
+    req.body.id,
+    req.body,
+    { new: true }
+  );
+  res.status(200).send(representative);
 });
 
 router.post("/getSpecificRepresentativesById", (req, res) => {

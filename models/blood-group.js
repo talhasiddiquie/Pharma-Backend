@@ -7,5 +7,5 @@ var BloodGroup = new Schema({
     isActive: { type: Boolean },
 });
 
-const BloodGroups = mongoose.model('BloodGroup', BloodGroup);
+const BloodGroups = mongoose.model('bloodGroup', BloodGroup);
 module.exports = BloodGroups;
