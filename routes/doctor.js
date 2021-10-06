@@ -6,7 +6,9 @@ const doctorMail = require("../middlewares/doctormail");
 const { populate } = require("../models/doctor");
 
 router.post("/postDoctor", async (req, res) => {
+  console.log(req.body, "<=========DOCTOR BODY");
   const doctor = await Doctor.create(req.body);
+  console.log(doctor, "<============= wow");
   res.status(201).send(doctor);
 });
 
@@ -28,7 +30,19 @@ router.get("/getDoctors", async (req, res) => {
 });
 
 router.post("/getDoctor", async (req, res) => {
-  const result = await Doctor.findById(req.body.id);
+  const result = await Doctor.findById(req.body.id)
+    .populate("representativeId")
+    .populate("regionId")
+    .populate("zoneId")
+    .populate("territoryId")
+    .populate("qualificationId")
+    .populate("designationId")
+    .populate("specialityId")
+    .populate("hospitalId")
+    .populate("provinceId")
+    .populate("cityId")
+    .populate("brickId")
+    .populate("tierId");
   res.status(200).send(result);
 });
 

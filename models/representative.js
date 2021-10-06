@@ -22,7 +22,7 @@ var representative = new Schema(
     dateOfBirth: { type: Date },
     bloodGroupId: { type: mongoose.Schema.Types.ObjectId, ref: "bloodGroup" },
     workType: { type: String },
-    sellingLine: { type: String },
+    company: { type: mongoose.Schema.Types.ObjectId, ref: "company" },
     isActive: { type: Boolean },
     password: { type: String },
     representativeId: {

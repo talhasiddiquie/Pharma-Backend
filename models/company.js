@@ -3,11 +3,6 @@ const { Schema } = mongoose;
 
 var company = new Schema(
   {
-    regionId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "region",
-      required: true,
-    },
     objectId: { type: String },
     name: { type: String },
     abbreviation: { type: String },

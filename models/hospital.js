@@ -15,7 +15,7 @@ var hospital = new Schema(
     // territoryId: { type: String },
     brickId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "bricks",
+      ref: "brick",
       required: true,
     },
     isActive: { type: Boolean },
